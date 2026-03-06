@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Laboratório de IA do Zero</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a1a; color: white; padding: 20px; }
+        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        textarea { width: 100%; height: 150px; background: #333; color: #0f0; border: 1px solid #555; }
+        .card { background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; }
+        button { background: #0070f3; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>🧠 IA Engine (Zero Libs)</h1>
+    <div class="container">
+        <div class="card">
+            <h3>1. Treinamento (JSON)</h3>
+            <textarea id="treino">
+[
+  {"frase": "olá bom dia", "categoria": "saudação"},
+  {"frase": "quem é você", "categoria": "identidade"},
+  {"frase": "tchau até logo", "categoria": "despedida"}
+]
+            </textarea>
+        </div>
+
+        <div class="card">
+            <h3>2. Testar Inteligência</h3>
+            <input type="text" id="pergunta" placeholder="Digite algo..." style="width:94%; padding:10px; margin-bottom:10px;">
+            <button onclick="testarIA()">Executar Inferência</button>
+            <div id="resultado" style="margin-top:20px; font-weight:bold; color: #0f0;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testarIA() {
+            const treino = JSON.parse(document.getElementById('treino').value);
+            const msg = document.getElementById('pergunta').value;
+            const resDiv = document.getElementById('resultado');
+
+            resDiv.innerText = "Pensando...";
+
+            const response = await fetch('/api/train', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ treinamento: treino, mensagemTeste: msg })
+            });
+
+            const data = await response.json();
+            resDiv.innerHTML = `Resultado: ${data.intencao} <br> Confiança: ${data.confianca}`;
+        }
+    </script>
+</body>
+</html>
